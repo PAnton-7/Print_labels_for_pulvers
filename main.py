@@ -1,3 +1,5 @@
+from time import sleep
+
 import pandas as pd
 import ctypes
 from lexicon import LEXICON
@@ -38,22 +40,27 @@ def print_labels(tsclibrary) -> None:
         one_label_dict = one_label[1].to_dict()
 
         # Cоздаем образ этикетки
-        lable_like_excel_code(tsclibrary, one_label_dict)
+        try:
+            lable_like_excel_code(tsclibrary, one_label_dict)
 
-        # Формируем текст QR-кода, и добавляем его на бирку
-        qrcode = f'{one_label[1][LEXICON["Reference"]]}R{one_label[1][LEXICON["Lot #"]]}'
-        tsclibrary.sendcommandW(f'QRCODE 330, 144, H, 5, A, 0, J1, M2, "{qrcode}"')
-        # Печатаем бирку
-        tsclibrary.sendcommandW("PRINT 1, 1")
-        # Очищаем буфер принтера для новой этикетки
-        tsclibrary.sendcommandW("CLS")
+            # Формируем текст QR-кода, и добавляем его на бирку
+            qrcode = f'{one_label[1][LEXICON["Reference"]]}R{one_label[1][LEXICON["Lot #"]]}'
+            tsclibrary.sendcommandW(f'QRCODE 330, 144, H, 5, A, 0, J1, M2, "{qrcode}"')
+            # Печатаем бирку
+            tsclibrary.sendcommandW("PRINT 1, 1")
+            # Очищаем буфер принтера для новой этикетки
+            tsclibrary.sendcommandW("CLS")
+        except Exception as e:
+            print(f'Произошла ошибка: {str(e)}')
+            sleep(5)
+            tsclibrary.sendcommandW("CLS")
 
     tsclibrary.closeport()
 
 
 def main():
     printer_lib = on_printer_lib(".//TSCLIB.dll")
-    set_up_printer(printer_lib)
+    # set_up_printer(printer_lib)
     print_labels(printer_lib)
 
 
