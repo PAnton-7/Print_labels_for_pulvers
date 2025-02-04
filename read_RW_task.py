@@ -46,7 +46,7 @@ def get_df() -> DataFrame:
 
 
 def main():
-    get_df()
+    print(get_df())
 
 
 if __name__ == '__main__':

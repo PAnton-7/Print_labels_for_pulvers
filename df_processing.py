@@ -25,7 +25,7 @@ def check_weight(num: float | str | int) -> str:
             if float_part:
                 return str(float(num))
             return str(int(int_part))
-        return 'Error'
+        return 'Error in weight'
     except:
         return num
 
@@ -54,7 +54,6 @@ def task_rw_df_to_lable_df() -> DataFrame:
     df = df[[LEXICON['Client'], LEXICON['Sampl. date'], LEXICON['Ex.'], LEXICON['Mark'],
              LEXICON['Reference'], LEXICON['Lot #'], LEXICON['Material'], LEXICON['Weight'],
              LEXICON['Prepared by'], LEXICON['Pulverized by'], LEXICON['Sampled by']]]
-
     # Вставляем колонку с датой печати и типом пробы
     ins = f'{get_date_time()[2]} Analytical sample'
     df.insert(loc=0, column='Date', value=ins, allow_duplicates=True)
@@ -77,7 +76,7 @@ def task_rw_df_to_lable_df() -> DataFrame:
     # df['Sampled'] = df['Sampled'].apply(lambda x: x.replace('\n', '\\'))
 
     # Заменяем NaN на '-'
-    df.fillna(value=0, inplace=True)
+    df.fillna(value='-', inplace=True)
 
     return df
 
