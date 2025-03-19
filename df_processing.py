@@ -5,7 +5,7 @@ from read_RW_task import get_df
 from lexicon import LEXICON, analytycal_sample_header
 from datetime import datetime
 from math import modf
-
+from transliterate import translit
 
 def isfloat(num):
     try:
@@ -65,8 +65,11 @@ def task_rw_df_to_lable_df() -> DataFrame:
         lambda x: x if isinstance(x, str) else x.strftime(format='%d/%m/%Y'))
 
     # Обрабатываем столбец с номерами лотов: там где число - переводим в int,
-    # там где строка - оставляем строку
+    # там где строка - оставляем строку, если float то возвращаем int
     df['Lot #'] = df['Lot #'].apply(lambda x: int(x) if isfloat(x) else x)
+    # русские буквы заменяем на английские заглавные
+    df['Lot #'] = df['Lot #'].apply(lambda x: translit(x.upper(), language_code='ru', reversed=True) if isinstance(x, str) else x)
+
 
     # Обрабатываем столбец с весами лотов: там где число с дробной частью отличной от 0 -
     # переводим в int, там где строка - оставляем строку

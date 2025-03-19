@@ -7,7 +7,7 @@ from df_processing import task_rw_df_to_lable_df
 from lable_img_code import lable_like_excel_code
 
 
-PRINTER_PORT = "\\\\desktop-oghps2j\\tsc te200"
+PRINTER_PORT = "TSC TE200"
 
 
 def on_printer_lib(path: str = ".//TSCLIB.dll"):
@@ -60,7 +60,7 @@ def print_labels(tsclibrary) -> None:
 
 def main():
     printer_lib = on_printer_lib(".//TSCLIB.dll")
-    # set_up_printer(printer_lib)
+    set_up_printer(printer_lib)
     print_labels(printer_lib)
 
 
