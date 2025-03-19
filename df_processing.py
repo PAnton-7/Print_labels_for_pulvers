@@ -2,10 +2,11 @@ import pandas as pd
 from typing import Tuple
 from pandas import DataFrame
 from read_RW_task import get_df
+from read_RW_task import read_rw_task
 from lexicon import LEXICON, analytycal_sample_header
 from datetime import datetime
 from math import modf
-
+from transliterate import translit
 
 def isfloat(num):
     try:
@@ -42,7 +43,7 @@ def rename_df_header(df: DataFrame) -> DataFrame:
 
 def task_rw_df_to_lable_df() -> DataFrame:
     # Получаем датафрейм
-    df = get_df()
+    df, path = get_df()
     # Переименовываем названия колонок
     df = rename_df_header(df)
     # Добавляем информацию о терминале в строку к клиенту
@@ -65,8 +66,11 @@ def task_rw_df_to_lable_df() -> DataFrame:
         lambda x: x if isinstance(x, str) else x.strftime(format='%d/%m/%Y'))
 
     # Обрабатываем столбец с номерами лотов: там где число - переводим в int,
-    # там где строка - оставляем строку
+    # там где строка - оставляем строку, если float то возвращаем int
     df['Lot #'] = df['Lot #'].apply(lambda x: int(x) if isfloat(x) else x)
+    # русские буквы заменяем на английские заглавные
+    df['Lot #'] = df['Lot #'].apply(lambda x: translit(x.upper(), language_code='ru', reversed=True) if isinstance(x, str) else x)
+
 
     # Обрабатываем столбец с весами лотов: там где число с дробной частью отличной от 0 -
     # переводим в int, там где строка - оставляем строку
@@ -78,14 +82,26 @@ def task_rw_df_to_lable_df() -> DataFrame:
     # Заменяем NaN на '-'
     df.fillna(value='-', inplace=True)
 
+    # Постановка случайного резерва на контроль
+    try:
+        if 'ЗАДАНИЕ ПО ВАГОНАМ' in path:
+            sample_for_control = df.sample(n=1)
+            sample_info_str = sample_for_control.iloc[0].to_string(header=False, index=False)
+            file_for_record = '\\\\diskstation\\exchange-inspector\\Для офиса\\Temp\\reserv.txt'
+            with open(file_for_record, "w") as file:
+                file.write(sample_info_str)
+
+    except Exception as e:
+        print(str(e))
+
     return df
 
 
 def main():
     pd.set_option('display.max_columns', None)
     df = task_rw_df_to_lable_df()
-    df.info()
-    print(df.head(20))
+    # df.info()
+    # print(df.head(20))
 
 
 if __name__ == '__main__':

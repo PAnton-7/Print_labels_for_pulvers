@@ -23,7 +23,7 @@ def read_rw_task(path: str = None) -> DataFrame:
     print()
     print(f'Найдено задание:\n{path}\nна {task_df.shape[0]} лотов')
 
-    return task_df
+    return task_df, path
 
 
 def choose_file() -> str:
@@ -33,7 +33,7 @@ def choose_file() -> str:
 
 
 def get_df() -> DataFrame:
-    df = read_rw_task(choose_file())
+    df, path = read_rw_task(choose_file())
 
     # Судовой пример
     # path: str = '\\\\DISKSTATION\\exchange-inspector\\01 ЗАДАНИЯ НА СМЕНУ\\2023\\06 JUNE\\ЗАДАНИЕ ПО СУДАМ\\Судовые бирки\\судовые на 23.06.2023.xlsm'
@@ -42,7 +42,7 @@ def get_df() -> DataFrame:
     # Вагонный пример
     # path: str = '\\\\DISKSTATION\\exchange-inspector\\01 ЗАДАНИЯ НА СМЕНУ\\2023\\06 JUNE\\ЗАДАНИЕ ПО ВАГОНАМ\\задание на 23.06.2023.xlsx'
     # df = read_rw_task(path)
-    return df
+    return df, path
 
 
 def main():
