@@ -1,8 +1,11 @@
+import logging
+from typing import Tuple
 import pandas as pd
 from pandas import DataFrame
 from tkinter import filedialog
 # from openpyxl.worksheet.filters import CustomFilterValueDescriptor
 
+logger = logging.getLogger()
 
 def monkey_set(self, instance, value):
     pass
@@ -11,7 +14,7 @@ def monkey_set(self, instance, value):
 # CustomFilterValueDescriptor.__set__ = monkey_set
 
 
-def read_rw_task(path: str = None) -> DataFrame:
+def read_rw_task(path: str = None) -> Tuple[DataFrame, str]:
     # Настраиваем текущую версия для операции df.fillna(value=0, inplace=True)
     pd.set_option('future.no_silent_downcasting', True)
     # читаем файл
@@ -19,9 +22,9 @@ def read_rw_task(path: str = None) -> DataFrame:
     task_df.info()
     task_df = task_df[(task_df['ЛОТ №'].notnull()) & (task_df['ЛОТ №'] != '*')]
 
-    task_df.info()
     print()
     print(f'Найдено задание:\n{path}\nна {task_df.shape[0]} лотов')
+    logger.info(path)
 
     return task_df, path
 
@@ -32,7 +35,7 @@ def choose_file() -> str:
     return filename
 
 
-def get_df() -> DataFrame:
+def get_df() -> Tuple[DataFrame, str]:
     df, path = read_rw_task(choose_file())
 
     # Судовой пример

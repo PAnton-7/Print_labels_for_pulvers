@@ -1,12 +1,16 @@
+import logging
 import pandas as pd
 from typing import Tuple
 from pandas import DataFrame
 from read_RW_task import get_df
-from read_RW_task import read_rw_task
 from lexicon import LEXICON, analytycal_sample_header
 from datetime import datetime
 from math import modf
 from transliterate import translit
+
+
+logger = logging.getLogger()
+
 
 def isfloat(num):
     try:
@@ -17,7 +21,7 @@ def isfloat(num):
 
 
 def check_weight(num: float | str | int) -> str:
-    """Если num не число, то num вернется без изменений, т.к. отработает блок try/except
+    """Если num не число, то num вернется без изменений, так как отработает блок try/except
        Если num может быть переведен в число, то делим его на дробную и целую часть."""
 
     try:
@@ -80,7 +84,11 @@ def task_rw_df_to_lable_df() -> DataFrame:
     # df['Sampled'] = df['Sampled'].apply(lambda x: x.replace('\n', '\\'))
 
     # Заменяем NaN на '-'
-    df.fillna(value='-', inplace=True)
+    # df.fillna(value='-', inplace=True)
+    df = df.astype(object)
+    df.replace([None], '-', inplace=True) # Работает если в столбце есть хоть одно значение
+    df.info()
+
 
     # Постановка случайного резерва на контроль
     try:

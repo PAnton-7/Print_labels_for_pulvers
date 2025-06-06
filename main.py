@@ -1,4 +1,5 @@
 from time import sleep
+import logging
 
 import pandas as pd
 import ctypes
@@ -9,6 +10,13 @@ from lable_img_code import lable_like_excel_code
 
 PRINTER_PORT = "TSC TE200"
 
+logger = logging.getLogger()
+log_file = '\\\\diskstation\\exchange-inspector\\Для офиса\\Temp\\Labels_log.log'
+# log_rec_format = '%(filename)s:%(lineno)d #%(levelname)-8s[%(asctime)s] - %(name)s - %(message)s'
+log_rec_format = '[%(asctime)s] %(levelname)-8s - %(name)s - %(message)s - %(filename)s:%(lineno)d'
+
+logging.basicConfig(filename=log_file, encoding='utf-8', level=logging.INFO, format=log_rec_format)
+logger.info('Запущена печать бирок')
 
 def on_printer_lib(path: str = ".//TSCLIB.dll"):
     return ctypes.WinDLL(path)
