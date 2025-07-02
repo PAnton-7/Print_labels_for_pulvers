@@ -16,7 +16,7 @@ log_file = '\\\\diskstation\\exchange-inspector\\Для офиса\\Temp\\Labels
 log_rec_format = '[%(asctime)s] %(levelname)-8s - %(name)s - %(message)s - %(filename)s:%(lineno)d'
 
 logging.basicConfig(filename=log_file, encoding='utf-8', level=logging.INFO, format=log_rec_format)
-logger.info('Запущена печать бирок')
+# logger.info('Запущена печать бирок')
 
 def on_printer_lib(path: str = ".//TSCLIB.dll"):
     return ctypes.WinDLL(path)
