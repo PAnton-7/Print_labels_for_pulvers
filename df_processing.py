@@ -99,12 +99,18 @@ def task_rw_df_to_lable_df() -> DataFrame:
             with open(file_for_record, "w") as file:
                 file.write(sample_info_str)
 
-            sample_info_str = sample_info_str.split('\n')[1:]
-            sample_info_str = (' ').join(sample_info_str)
             try:
-                file_for_record = '\\\\diskstation\\exchange-inspector\\Для офиса\\Temp\\all_reservs.txt'
-                with open(file_for_record, "a") as file:
-                    file.write(sample_info_str+'\n')
+                import openpyxl as xl
+
+                file_for_record = '\\\\diskstation\\exchange-inspector\\Для офиса\\Temp\\all_reservs.xlsx'
+
+                wb = xl.load_workbook(file_for_record, enumerate)
+                sheet = wb.worksheets[0]
+                start_row = sheet.max_row
+
+                with pd.ExcelWriter(file_for_record, 'openpyxl', mode='a', if_sheet_exists='overlay') as writer:
+                    sample_for_control.to_excel(writer, index=False, header=False, sheet_name="RESERVS", startrow=start_row)
+                    logging.info('резерв добавлен')
             except Exception as e:
                 print(str(e))
 
